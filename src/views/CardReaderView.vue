@@ -6,45 +6,56 @@
       class="d-flex"
       style="flex-wrap:wrap;justify-content: center;align-items: center;"
     >
-      <i-d-card  style="max-width:324px;min-height:280px;" ></i-d-card>
-      <group-card   style="min-width:400px;min-height:350px;"></group-card>
+      <i-d-card style="max-width:400px;min-height:280px;margin:1rem"></i-d-card>
+      <group-card
+        style="min-width:400px;min-height:350px;margin:1rem"
+      ></group-card>
     </div>
-    <v-card
-      rounded="xl"
-      raised
-      class="ph-2 mb-4"
-      style="padding:1rem;margin:1rem"
+    <div
+      class="d-flex"
+      style="flex-wrap:wrap;justify-content: center;align-items: center;"
     >
-      <v-slider
-        class="mb-4"
-        v-model="$store.state.cardReader.mode"
-        :tick-labels="labels"
-        :max="2"
-        solo
-        step="1"
-        ticks="always"
-        tick-size="4"
-      ></v-slider
-    ></v-card>
-    <v-card
-      rounded="xl"
-      raised
-      class="ph-2 mb-4"
-      style="padding:1rem;margin:1rem"
-    >
-      <v-text-field
-        label="身份证手工录入"
-        v-model="idcard"
-        solo
-        style="display:inline"
-      ></v-text-field>
-      <v-btn @click="setCardmanually()">身份证手工录入</v-btn>
-      <v-btn @click="ReadCard">读卡</v-btn>
-      <v-btn v-if="!isCircleReading" @click="StartCircleReadCard()"
-        >循环读卡</v-btn
+      <v-card
+        rounded="xl"
+        raised
+        min-width="400"
+        min-height="100"
+        class="ph-5 mb-4"
+        style="padding:1rem;margin:1rem;padding:2.3rem"
       >
-      <v-btn v-else @click="StopCircleReadCard()">停止循环读卡</v-btn>
-    </v-card>
+        <v-slider
+          class="mb-4"
+          v-model="$store.state.cardReader.mode"
+          :tick-labels="labels"
+          :max="2"
+          solo
+          step="1"
+          ticks="always"
+          tick-size="4"
+        ></v-slider
+      ></v-card>
+      <v-card
+        rounded="xl"
+        min-width="400"
+        raised
+        min-height="100"
+        class="ph-2 mb-4"
+        style="padding:1rem;margin:1rem"
+      >
+        <v-text-field
+          label="身份证手工录入"
+          v-model="idcard"
+          solo
+          style="display:inline"
+        ></v-text-field>
+        <v-btn @click="setCardmanually()">身份证手工录入</v-btn>
+        <v-btn @click="ReadCard">读卡</v-btn>
+        <v-btn v-if="!isCircleReading" @click="StartCircleReadCard()"
+          >循环读卡</v-btn
+        >
+        <v-btn v-else @click="StopCircleReadCard()">停止循环读卡</v-btn>
+      </v-card>
+    </div>
   </div>
 </template>
 <script lang="ts">

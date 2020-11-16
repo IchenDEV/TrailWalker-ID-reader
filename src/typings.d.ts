@@ -1,11 +1,13 @@
-import {IpcRenderer} from 'electron';
+import {IpcRenderer,app,remote} from 'electron';
  
 declare global {
   interface Window {
     require: (module: 'electron') => {
-      ipcRenderer: IpcRenderer
+      ipcRenderer: IpcRenderer,
+      app:app,
+      remote:remote
     };
   }
 }
  
-const { ipcRenderer } = window.require('electron');
+const { ipcRenderer,app,remote } = window.require('electron');

@@ -2,11 +2,14 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { API, apiMap } from "@/utils/api/api";
 import { postData } from "@/utils/fetch";
-const { ipcRenderer } = window.require("electron");
+const { ipcRenderer, remote,app } = window.require("electron");
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    app:{
+      version:remote.app.getVersion(),
+    },
     currentIDCard: {
       partyName: "精小弘",
       identityPic: "",
@@ -14,9 +17,9 @@ export default new Vuex.Store({
       resultFlag: -1
     },
     cardReader: {
-      name: "0001号机",
+      name: remote.require("node-machine-id").machineIdSync(true),
       isOpen: false,
-      interval: 800,
+      interval: 1000,
       mode: 0
     },
     dialog: {
@@ -34,7 +37,7 @@ export default new Vuex.Store({
       groupId: "",
       memberList: []
     },
-    isDebugMode: true
+    isDebugMode: false
 
   },
   mutations: {

@@ -23,7 +23,7 @@
         v-model="snackbar"
         centered
         elevation="24"
-        :timeout="5000"
+        :timeout="3000"
         :color="color"
       >
         {{ text }}

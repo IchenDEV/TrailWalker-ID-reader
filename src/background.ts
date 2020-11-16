@@ -4,6 +4,8 @@ import { app, protocol, BrowserWindow, screen } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { ipcMain } from 'electron'
+import {machineId, machineIdSync} from 'node-machine-id';
+
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 let mainWin: BrowserWindow;
 let screenWin: BrowserWindow;
@@ -13,6 +15,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: false, standard: true } }
 ])
+
 
 async function createWindow() {
   // Create the browser window.
@@ -24,7 +27,8 @@ async function createWindow() {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: true,
-      webSecurity: false
+      webSecurity: false,
+      enableRemoteModule: true
     }
   })
 
@@ -75,7 +79,6 @@ async function createLargeScreenWindow() {
 
 
 }
-
 
 
 // Quit when all windows are closed.
