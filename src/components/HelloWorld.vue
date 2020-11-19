@@ -9,6 +9,7 @@
         <p class="subheading font-weight-regular">
             如果碰到问题请联系现场负责人员
           <br>或者在工作人员群提出
+          <br>内部软件勿外传
 
         </p>
       </v-col>

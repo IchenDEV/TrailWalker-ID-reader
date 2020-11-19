@@ -1,4 +1,6 @@
 const env = process.env ? process.env.NODE_ENV : "production";
+const devUrl = `https://walk.jh.zjutjh.com`;
+const serverUrl = `https://walk.jh.zjutjh.com`;
 
 enum apiMap {
     userInfo = "/reader/user",

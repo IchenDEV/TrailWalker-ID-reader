@@ -114,6 +114,9 @@ import { Component, Vue } from "vue-property-decorator";
 const { ipcRenderer } = window.require("electron");
 @Component({})
 export default class App extends Vue {
+  private mounted(){
+    ipcRenderer.on("machie-id", (e, message) => {this.$store.state.cardReader.name=message});
+  }
   private async closeWindows() {
     console.log("close");
     ipcRenderer.send("window-close");

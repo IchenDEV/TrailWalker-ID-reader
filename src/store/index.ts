@@ -17,7 +17,7 @@ export default new Vuex.Store({
       resultFlag: -1
     },
     cardReader: {
-      name: remote.require("node-machine-id").machineIdSync(true),
+      name:"001",
       isOpen: false,
       interval: 1000,
       mode: 0
@@ -89,7 +89,17 @@ export default new Vuex.Store({
       const response = await postData(API(apiMap.recode), { idcard: payload.idcard.certNumber, mode: payload.reader.mode, reader: payload.reader.name, pass: "QWERT" });
       if (response.code === 1) {
         context.commit("setSnackbar", { show: true, text: "刷卡成功" });
-        ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，刷卡成功\r\n欢迎参加本次精弘毅行\r\n一起大声地告诉世界 “我来了！”", color: "primary" });
+        if(payload.reader.mode==1){
+          ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，刷卡成功\r\n欢迎参加本次精弘毅行\r\n一起大声地告诉世界 “我来了！”", color: "primary" });
+        }
+        else if(payload.reader.mode==2||payload.reader.mode==3){
+          ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，恭喜你完成了本次毅行", color: "primary" });
+        }
+        else{
+          ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，刷卡成功", color: "primary" });
+
+        }
+      
       }
       else {
         context.commit("setDialog", { show: true, title: "出错了", msg: response.msg });

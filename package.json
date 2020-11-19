@@ -15,12 +15,12 @@
   "main": "background.js",
   "dependencies": {
     "node-machine-id": "^1.1.12",
-    "vue": "^2.6.11",
-    "vue-class-component": "^7.2.3",
+    "vue": "^2.6.12",
+    "vue-class-component": "^7.2.6",
     "vue-property-decorator": "^8.4.2",
-    "vue-router": "^3.2.0",
-    "vuetify": "^2.2.11",
-    "vuex": "^3.4.0"
+    "vue-router": "^3.4.9",
+    "vuetify": "^2.3.17",
+    "vuex": "^3.5.1"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.2.0",
@@ -34,15 +34,15 @@
     "@vue/eslint-config-typescript": "^5.0.2",
     "electron": "^9.0.0",
     "electron-devtools-installer": "^3.1.0",
-    "electron-icon-builder": "^1.0.2",
+    "electron-rebuild": "^2.3.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "sass": "^1.19.0",
+    "sass": "^1.29.0",
     "sass-loader": "^8.0.0",
     "typescript": "~3.9.3",
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.5",
     "vue-cli-plugin-vuetify": "~2.0.7",
     "vue-template-compiler": "^2.6.11",
-    "vuetify-loader": "^1.3.0"
+    "vuetify-loader": "^1.6.0"
   }
 }

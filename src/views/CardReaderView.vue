@@ -67,7 +67,7 @@ import GroupCard from "@/components/GroupCard.vue";
 export default class CardReaderView extends Vue {
   public isCircleReading = false;
   public CircleReadingInterval = 0;
-  public labels = ["起点", "下撤终点", "完成终点"];
+  public labels = ["起点", "未完成", "半程完成", "全程完成"];
   private idcard = "";
   private mounted() {
     this.$store.dispatch("connentCardReader");
