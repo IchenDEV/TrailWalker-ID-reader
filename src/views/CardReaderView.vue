@@ -21,13 +21,13 @@
         min-width="400"
         min-height="100"
         class="ph-5 mb-4"
-        style="padding:1rem;margin:1rem;padding:2.3rem"
+        style="padding:1rem;margin:1rem;"
       >
         <v-slider
           class="mb-4"
           v-model="$store.state.cardReader.mode"
           :tick-labels="labels"
-          :max="2"
+          :max="3"
           solo
           step="1"
           ticks="always"
@@ -46,9 +46,10 @@
           label="身份证手工录入"
           v-model="idcard"
           solo
+          rounded="xl"
           style="display:inline"
         ></v-text-field>
-        <v-btn @click="setCardmanually()">身份证手工录入</v-btn>
+        <v-btn @click="setCardmanually">身份证手工录入</v-btn>
         <v-btn @click="ReadCard">读卡</v-btn>
         <v-btn v-if="!isCircleReading" @click="StartCircleReadCard()"
           >循环读卡</v-btn
@@ -80,8 +81,8 @@ export default class CardReaderView extends Vue {
     });
   }
 
-  private async recode() {
-    await this.$store.dispatch("recodeIDCard", {
+  private recode(): Promise<any> {
+    return this.$store.dispatch("recodeIDCard", {
       idcard: this.$store.state.currentIDCard,
       reader: this.$store.state.cardReader,
     });
@@ -89,9 +90,16 @@ export default class CardReaderView extends Vue {
 
   private async setCardmanually() {
     if (this.idcard !== "") {
-      await this.$store.dispatch("fetchUserInfo", { certNumber: this.idcard });
-      await this.recode();
-      await this.getGroupInfo();
+      const s1 = await this.$store.dispatch("fetchUserInfo", {
+         certNumber: this.idcard
+    
+       
+      });
+      if (s1) {
+        if (await this.recode()) {
+          await this.getGroupInfo();
+        }
+      }
     }
   }
   private async OpenDevice() {
@@ -101,13 +109,15 @@ export default class CardReaderView extends Vue {
 
   private async ReadCard() {
     if (!this.$store.state.cardReader.isOpen) {
-      await this.OpenDevice();
+      if (!this.$store.state.dialog.show) {
+        await this.OpenDevice();
+      }
     }
     await this.$store.dispatch("readCard");
     const code = this.$store.state.currentIDCard.resultFlag;
     if (code === 0) {
-      await this.recode();
-      await this.getGroupInfo();
+      const isrecode = await this.recode();
+      if (isrecode) await this.getGroupInfo();
     }
   }
 

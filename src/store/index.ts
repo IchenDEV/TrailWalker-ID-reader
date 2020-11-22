@@ -2,13 +2,13 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { API, apiMap } from "@/utils/api/api";
 import { postData } from "@/utils/fetch";
-const { ipcRenderer, remote,app } = window.require("electron");
+const { ipcRenderer, remote, app } = window.require("electron");
 Vue.use(Vuex)
-
+let prevIdcard = "";
 export default new Vuex.Store({
   state: {
-    app:{
-      version:remote.app.getVersion(),
+    app: {
+      version: remote.app.getVersion(),
     },
     currentIDCard: {
       partyName: "精小弘",
@@ -17,7 +17,7 @@ export default new Vuex.Store({
       resultFlag: -1
     },
     cardReader: {
-      name:"001",
+      name: "001",
       isOpen: false,
       interval: 1000,
       mode: 0
@@ -62,14 +62,19 @@ export default new Vuex.Store({
   },
   actions: {
     async fetchUserInfo(context, payload) {
+      if (payload.certNumber === prevIdcard)
+        return false;
+
       const response = await postData(API(apiMap.userInfo), { idcard: payload.certNumber, pass: "QWERT" });
       if (response.code === 1) {
         context.commit("setCurrentIDCard", { certNumber: payload.certNumber, partyName: response.data.name });
+        return true;
       }
       else {
         context.commit("setCurrentIDCard", { certNumber: payload.certNumber });
         context.commit("setDialog", { show: true, title: "出错了", msg: response.msg });
         context.commit("setGroup", { name: "", route: "", groupId: "", memberList: [] });
+        return false;
       }
 
     },
@@ -85,26 +90,29 @@ export default new Vuex.Store({
 
     },
     async recodeIDCard(context, payload) {
+      if (payload.idcard.certNumber === prevIdcard)
+        return false;
 
+      prevIdcard = payload.idcard.certNumber;
       const response = await postData(API(apiMap.recode), { idcard: payload.idcard.certNumber, mode: payload.reader.mode, reader: payload.reader.name, pass: "QWERT" });
       if (response.code === 1) {
         context.commit("setSnackbar", { show: true, text: "刷卡成功" });
-        if(payload.reader.mode==1){
+        if (payload.reader.mode == 1) {
           ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，刷卡成功\r\n欢迎参加本次精弘毅行\r\n一起大声地告诉世界 “我来了！”", color: "primary" });
         }
-        else if(payload.reader.mode==2||payload.reader.mode==3){
+        else if (payload.reader.mode == 2 || payload.reader.mode == 3) {
           ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，恭喜你完成了本次毅行", color: "primary" });
         }
-        else{
+        else {
           ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，刷卡成功", color: "primary" });
-
         }
-      
+        return true;
       }
       else {
         context.commit("setDialog", { show: true, title: "出错了", msg: response.msg });
         context.commit("setGroup", { name: "", route: "", groupId: "", memberList: [] });
         ipcRenderer.send('showInfo', { text: response.msg, color: "red" });
+        return false;
       }
     },
     async connentCardReader(context) {
@@ -133,12 +141,14 @@ export default new Vuex.Store({
           if (text) {
             const idcard = JSON.parse(text)
             if (idcard.resultFlag === 0) {
+
               context.commit('setCurrentIDCard', idcard);
               resolve(true);
 
-            }else if (idcard.resultFlag === -11) { resolve(false); } else {
+            }
+            else if (idcard.resultFlag === -11) { resolve(false); } else {
               context.commit('setIDCardReaderState', false);
-              context.commit('setCurrentIDCard', {partyName: "精小弘", identityPic: "", certNumber: "2020精弘毅行欢迎你", resultFlag: -1});
+              context.commit('setCurrentIDCard', { partyName: "精小弘", identityPic: "", certNumber: "2020精弘毅行欢迎你", resultFlag: -1 });
               resolve(false);
             }
 

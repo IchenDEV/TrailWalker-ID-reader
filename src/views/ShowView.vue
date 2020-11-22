@@ -17,7 +17,6 @@
       class="d-flex"
       style="flex-wrap:wrap;justify-content: center;align-items: center;height:100vh"
     >
-      <i-d-card class="mx-auto"  style="max-width:344px;max-height:340px;transform: scale(1.5);"></i-d-card>
       <group-card  class="mx-auto" style="width:500px;height:350px;transform: scale(1.5);"></group-card>
       <v-snackbar
         v-model="snackbar"
