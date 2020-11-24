@@ -90,16 +90,11 @@ export default class CardReaderView extends Vue {
 
   private async setCardmanually() {
     if (this.idcard !== "") {
-      const s1 = await this.$store.dispatch("fetchUserInfo", {
-         certNumber: this.idcard
-    
-       
+      const isOk = await this.$store.dispatch("fetchUserInfo", {
+        certNumber: this.idcard,
+        reader: this.$store.state.cardReader,
       });
-      if (s1) {
-        if (await this.recode()) {
-          await this.getGroupInfo();
-        }
-      }
+      if (isOk) if (await this.recode()) await this.getGroupInfo();
     }
   }
   private async OpenDevice() {

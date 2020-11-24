@@ -5,6 +5,7 @@ import { postData } from "@/utils/fetch";
 const { ipcRenderer, remote, app } = window.require("electron");
 Vue.use(Vuex)
 let prevIdcard = "";
+let prevMode = 0;
 export default new Vuex.Store({
   state: {
     app: {
@@ -62,10 +63,11 @@ export default new Vuex.Store({
   },
   actions: {
     async fetchUserInfo(context, payload) {
-      if (payload.certNumber === prevIdcard)
+      if (payload.certNumber === prevIdcard && payload.reader.mode === prevMode)
         return false;
 
       const response = await postData(API(apiMap.userInfo), { idcard: payload.certNumber, pass: "QWERT" });
+
       if (response.code === 1) {
         context.commit("setCurrentIDCard", { certNumber: payload.certNumber, partyName: response.data.name });
         return true;
@@ -79,7 +81,9 @@ export default new Vuex.Store({
 
     },
     async fetchGroupInfo(context, payload) {
+
       const response = await postData(API(apiMap.groupInfo), { idcard: payload.idcard.certNumber, mode: payload.reader.mode, pass: "QWERT" });
+
       if (response.code === 1) {
         context.commit("setGroup", response.data);
       }
@@ -90,22 +94,23 @@ export default new Vuex.Store({
 
     },
     async recodeIDCard(context, payload) {
-      if (payload.idcard.certNumber === prevIdcard)
+
+      if (payload.idcard.certNumber === prevIdcard && payload.reader.mode === prevMode)
         return false;
 
       prevIdcard = payload.idcard.certNumber;
+      prevMode = payload.reader.mode;
       const response = await postData(API(apiMap.recode), { idcard: payload.idcard.certNumber, mode: payload.reader.mode, reader: payload.reader.name, pass: "QWERT" });
       if (response.code === 1) {
         context.commit("setSnackbar", { show: true, text: "刷卡成功" });
-        if (payload.reader.mode == 1) {
-          ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，刷卡成功\r\n欢迎参加本次精弘毅行\r\n一起大声地告诉世界 “我来了！”", color: "primary" });
-        }
-        else if (payload.reader.mode == 2 || payload.reader.mode == 3) {
+
+        if (payload.reader.mode == 0) 
+          ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，刷卡成功\r\n欢迎参加本次精弘毅行\r\n", color: "primary" });
+        else if (payload.reader.mode == 1 || payload.reader.mode == 2) 
           ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，恭喜你完成了本次毅行", color: "primary" });
-        }
-        else {
+        else 
           ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，刷卡成功", color: "primary" });
-        }
+        
         return true;
       }
       else {
@@ -118,9 +123,8 @@ export default new Vuex.Store({
     async connentCardReader(context) {
       const response = await fetch("http://localhost:19196/OpenDevice");
       const res = await response.json();
-      if (res.resultFlag === 0) {
+      if (res.resultFlag === 0) 
         context.commit('setIDCardReaderState', true)
-      }
       else {
         context.commit('setIDCardReaderState', false)
         context.commit("setDialog", { show: true, title: "出错了", msg: "未连接到刷卡机" });
@@ -135,27 +139,22 @@ export default new Vuex.Store({
       const blob = await response.blob()
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        // Wait till complete
         reader.onloadend = function (e: any) {
           const text = reader.result?.toString();
           if (text) {
             const idcard = JSON.parse(text)
             if (idcard.resultFlag === 0) {
-
               context.commit('setCurrentIDCard', idcard);
               resolve(true);
-
             }
             else if (idcard.resultFlag === -11) { resolve(false); } else {
               context.commit('setIDCardReaderState', false);
               context.commit('setCurrentIDCard', { partyName: "精小弘", identityPic: "", certNumber: "2020精弘毅行欢迎你", resultFlag: -1 });
               resolve(false);
             }
-
           }
           resolve(false);
         };
-        // Make sure to handle error states
         reader.onerror = function (e: any) {
           reject(e);
         };

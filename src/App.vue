@@ -103,7 +103,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar v-model="$store.state.snackbar.show"         :timeout="1500">
+    <v-snackbar v-model="$store.state.snackbar.show" :timeout="1500">
       {{ $store.state.snackbar.text }}
     </v-snackbar>
   </v-app>
