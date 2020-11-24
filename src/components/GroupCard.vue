@@ -1,6 +1,6 @@
 <template>
   <v-card style="margin:1rem;padding:1rem"   rounded="xl" raised>
-    <v-img max-height="350" v-if="$store.state.currentGroup.groupId===''" :src="require('../assets/runing.svg')" ></v-img>
+    <v-img max-height="350" max-width="350" v-if="$store.state.currentGroup.groupId===''" :src="require('../assets/runing.svg')" ></v-img>
     <v-card-title>
       {{ $store.state.currentGroup.name }}
     </v-card-title>

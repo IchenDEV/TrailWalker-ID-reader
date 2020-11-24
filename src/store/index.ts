@@ -106,7 +106,7 @@ export default new Vuex.Store({
 
         if (payload.reader.mode == 0) 
           ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，刷卡成功\r\n欢迎参加本次精弘毅行\r\n", color: "primary" });
-        else if (payload.reader.mode == 1 || payload.reader.mode == 2) 
+        else if (payload.reader.mode == 2 || payload.reader.mode == 3) 
           ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，恭喜你完成了本次毅行", color: "primary" });
         else 
           ipcRenderer.send('showInfo', { text: "欢迎" + payload.idcard.partyName === undefined ? "" : payload.idcard.partyName + "，刷卡成功", color: "primary" });
