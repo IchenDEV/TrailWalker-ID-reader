@@ -111,11 +111,23 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 const { ipcRenderer } = window.require("electron");
 @Component({})
 export default class App extends Vue {
-  private mounted(){
-    ipcRenderer.on("machie-id", (e, message) => {this.$store.state.cardReader.name=message});
+  private async mounted() {
+    const fp = await FingerprintJS.load();
+
+    // The FingerprintJS agent is ready.
+    // Get a visitor identifier when you'd like to.
+    const result = await fp.get();
+
+    // This is the visitor identifier:
+    this.$store.state.cardReader.name = result.visitorId;
+
+    ipcRenderer.on("machie-id", (e, message) => {
+      this.$store.state.cardReader.name = message;
+    });
   }
   private async closeWindows() {
     console.log("close");
@@ -127,7 +139,6 @@ export default class App extends Vue {
 }
 </script>
 <style>
-
 body {
   overflow-y: hidden;
 }
@@ -142,13 +153,13 @@ body {
 .v-toolbar__content {
   justify-content: space-between;
 }
-.v-snack__content{
-  font-size: 3rem!important;
-  line-height: 9rem!important;
-  padding: 4rem!important;
+.v-snack__content {
+  font-size: 3rem !important;
+  line-height: 9rem !important;
+  padding: 4rem !important;
   white-space: pre-line;
 }
-.v-snack__wrapper{
-  max-width: 1000px!important;
+.v-snack__wrapper {
+  max-width: 1000px !important;
 }
 </style>

@@ -63,10 +63,7 @@ export default new Vuex.Store({
   },
   actions: {
     async fetchUserInfo(context, payload) {
-      if (payload.certNumber === prevIdcard && payload.reader.mode === prevMode)
-        return false;
-
-      const response = await postData(API(apiMap.userInfo), { idcard: payload.certNumber, pass: process.env.Pass });
+      const response = await postData(API(apiMap.userInfo), { idcard: payload.certNumber, pass: process.env.VUE_APP_Pass  });
 
       if (response.code === 1) {
         context.commit("setCurrentIDCard", { certNumber: payload.certNumber, partyName: response.data.name });
@@ -82,7 +79,7 @@ export default new Vuex.Store({
     },
     async fetchGroupInfo(context, payload) {
 
-      const response = await postData(API(apiMap.groupInfo), { idcard: payload.idcard.certNumber, mode: payload.reader.mode, pass: process.env.Pass });
+      const response = await postData(API(apiMap.groupInfo), { idcard: payload.idcard.certNumber, mode: payload.reader.mode, pass: process.env.VUE_APP_Pass  });
 
       if (response.code === 1) {
         context.commit("setGroup", response.data);
@@ -100,7 +97,7 @@ export default new Vuex.Store({
 
       prevIdcard = payload.idcard.certNumber;
       prevMode = payload.reader.mode;
-      const response = await postData(API(apiMap.recode), { idcard: payload.idcard.certNumber, mode: payload.reader.mode, reader: payload.reader.name, pass:process.env.Pass });
+      const response = await postData(API(apiMap.recode), { idcard: payload.idcard.certNumber, mode: payload.reader.mode, reader: payload.reader.name, pass:process.env.VUE_APP_Pass  });
       if (response.code === 1) {
         context.commit("setSnackbar", { show: true, text: "刷卡成功" });
 
